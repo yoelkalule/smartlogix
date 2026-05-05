@@ -1,0 +1,31 @@
+server:
+  port: 9000
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: ms-usuarios
+          uri: http://ms-usuarios:8080
+          predicates:
+            - Path=/api/usuarios/**
+
+        - id: ms-inventario
+          uri: http://ms-inventario:8081
+          predicates:
+            - Path=/api/inventario/**
+
+        - id: ms-pedidos
+          uri: http://ms-pedidos:8082
+          predicates:
+            - Path=/api/pedidos/**
+
+        - id: ms-envios
+          uri: http://ms-envios:8083
+          predicates:
+            - Path=/api/envios/**
+
+        - id: ms-notificaciones
+          uri: http://ms-notificaciones:8084
+          predicates:
+            - Path=/api/notificaciones/**
