@@ -2,13 +2,12 @@ package com.smartlogix.msinventario;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication
+@EnableJpaRepositories(basePackages = "com.smartlogix.msinventario.repository")
 public class MsInventarioApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(MsInventarioApplication.class, args);
     }
-
 }
