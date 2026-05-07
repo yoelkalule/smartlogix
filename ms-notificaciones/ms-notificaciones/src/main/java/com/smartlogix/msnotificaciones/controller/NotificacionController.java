@@ -1,35 +1,46 @@
 package com.smartlogix.msnotificaciones.controller;
 
-import com.smartlogix.msnotificaciones.factory.NotificacionFactory;
-import com.smartlogix.msnotificaciones.model.Notificacion;
+import com.smartlogix.msnotificaciones.model.NotificacionRegistro;
 import com.smartlogix.msnotificaciones.service.NotificacionService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/notificaciones")
 public class NotificacionController {
 
     private final NotificacionService notificacionService;
-    private final NotificacionFactory notificacionFactory;
 
-    public NotificacionController(NotificacionService notificacionService,
-                                  NotificacionFactory notificacionFactory) {
+    public NotificacionController(NotificacionService notificacionService) {
         this.notificacionService = notificacionService;
-        this.notificacionFactory = notificacionFactory;
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "ms-notificaciones funcionando";
     }
 
     @PostMapping("/enviar")
-    public String recibirNotificacion(@RequestParam Long pedidoId) {
-        notificacionService.procesarEvento(pedidoId);
-        return "Notificación procesada correctamente";
+    public ResponseEntity<NotificacionRegistro> recibirNotificacion(@RequestParam Long pedidoId) {
+        return ResponseEntity.ok(notificacionService.procesarEvento(pedidoId));
     }
 
     @PostMapping("/factory")
-    public String enviarConFactory(@RequestParam Long pedidoId,
-                                   @RequestParam String tipo,
-                                   @RequestParam String mensaje) {
-        Notificacion notificacion = notificacionFactory.crear(tipo, pedidoId, mensaje);
-        notificacion.enviar();
-        return "Notificacion tipo " + tipo + " enviada para pedido #" + pedidoId;
+    public ResponseEntity<NotificacionRegistro> enviarConFactory(@RequestParam Long pedidoId,
+                                                                  @RequestParam String tipo,
+                                                                  @RequestParam String mensaje) {
+        return ResponseEntity.ok(notificacionService.enviarNotificacion(pedidoId, tipo, mensaje));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<NotificacionRegistro>> listarTodas() {
+        return ResponseEntity.ok(notificacionService.listarTodas());
+    }
+
+    @GetMapping("/pedido/{pedidoId}")
+    public ResponseEntity<List<NotificacionRegistro>> listarPorPedido(@PathVariable Long pedidoId) {
+        return ResponseEntity.ok(notificacionService.listarPorPedido(pedidoId));
     }
 }
