@@ -10,16 +10,15 @@ public class NotificacionObserver implements PedidoListener {
 
     @Override
     public void update(Long pedidoId, String estado) {
-        System.out.println("📢 Patrón Observer: Se detectó la creación del pedido ID " + pedidoId);
-        System.out.println("🚀 Avisando a ms-notificaciones vía HTTP...");
+        System.out.println("Patrón Observer: Se detectó la creación del pedido ID " + pedidoId);
+        System.out.println("Avisando a ms-notificaciones vía HTTP...");
 
         try {
-            // Llama al microservicio de notificaciones (gracias a Docker, lo encuentra por su nombre)
             String url = "http://ms-notificaciones:8084/api/notificaciones/enviar?pedidoId=" + pedidoId;
             restTemplate.postForObject(url, null, String.class);
-            System.out.println("✅ Notificación enviada con éxito");
+            System.out.println("Notificación enviada con éxito");
         } catch (Exception e) {
-            System.out.println("⚠️ Error al conectar con ms-notificaciones: " + e.getMessage());
+            System.out.println("Error al conectar con ms-notificaciones: " + e.getMessage());
         }
     }
 }

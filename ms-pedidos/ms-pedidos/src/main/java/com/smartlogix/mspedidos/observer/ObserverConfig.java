@@ -18,6 +18,6 @@ public class ObserverConfig implements CommandLineRunner {
     @Override
     public void run(String... args) {
         eventManager.subscribe("PEDIDO_CREADO", notificacionObserver);
-        System.out.println("✅ Observer configurado: NotificacionObserver suscrito a PEDIDO_CREADO");
+        System.out.println("Observer configurado: NotificacionObserver suscrito a PEDIDO_CREADO");
     }
 }
