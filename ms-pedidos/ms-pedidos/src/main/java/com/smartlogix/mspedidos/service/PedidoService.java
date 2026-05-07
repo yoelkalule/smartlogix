@@ -1,5 +1,6 @@
 package com.smartlogix.mspedidos.service;
 
+import com.smartlogix.mspedidos.client.NotificacionesClient;
 import com.smartlogix.mspedidos.dto.PedidoRequest;
 import com.smartlogix.mspedidos.factory.PedidoBase;
 import com.smartlogix.mspedidos.factory.PedidoFactory;
@@ -21,15 +22,18 @@ public class PedidoService {
     private final PedidoFactory pedidoFactory;
     private final DescuentoStrategyFactory strategyFactory;
     private final EventManager eventManager;
+    private final NotificacionesClient notificacionesClient;
 
     public PedidoService(PedidoRepository pedidoRepository,
                          PedidoFactory pedidoFactory,
                          DescuentoStrategyFactory strategyFactory,
-                         EventManager eventManager) {
+                         EventManager eventManager,
+                         NotificacionesClient notificacionesClient) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoFactory = pedidoFactory;
         this.strategyFactory = strategyFactory;
         this.eventManager = eventManager;
+        this.notificacionesClient = notificacionesClient;
     }
 
     public Pedido crearPedido(PedidoRequest request, String tipoCliente) {
@@ -51,6 +55,9 @@ public class PedidoService {
         Pedido guardado = pedidoRepository.save(pedido);
 
         eventManager.notify("PEDIDO_CREADO", guardado.getId(), "CREADO");
+
+        String resultadoNotificacion = notificacionesClient.notificarPedido(guardado.getId());
+        System.out.println("[CircuitBreaker] Resultado notificacion: " + resultadoNotificacion);
 
         return guardado;
     }
