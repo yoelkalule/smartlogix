@@ -49,4 +49,10 @@ public class InventarioController {
         inventarioService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/productos/{id}/stock/devolver")
+    public ResponseEntity<Producto> devolverStock(@PathVariable Long id,
+                                               @RequestParam Integer cantidad) {
+    return ResponseEntity.ok(inventarioService.devolverStock(id, cantidad));
+}
 }

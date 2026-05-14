@@ -48,4 +48,10 @@ public class InventarioService {
     public void eliminarProducto(Long id) {
         productoRepository.deleteById(id);
     }
+
+    public Producto devolverStock(Long id, Integer cantidad) {
+    Producto producto = obtenerProducto(id);
+    producto.setStock(producto.getStock() + cantidad);
+    return productoRepository.save(producto);
+}
 }

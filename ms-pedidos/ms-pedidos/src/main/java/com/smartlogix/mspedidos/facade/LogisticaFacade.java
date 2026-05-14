@@ -9,6 +9,7 @@ import com.smartlogix.mspedidos.model.Pedido;
 import com.smartlogix.mspedidos.model.TipoPedido;
 import com.smartlogix.mspedidos.observer.EventManager;
 import com.smartlogix.mspedidos.repository.PedidoRepository;
+import com.smartlogix.mspedidos.saga.PedidoSagaOrchestrator;
 import com.smartlogix.mspedidos.strategy.DescuentoStrategy;
 import com.smartlogix.mspedidos.strategy.DescuentoStrategyFactory;
 import org.springframework.stereotype.Component;
@@ -21,17 +22,20 @@ public class LogisticaFacade {
     private final DescuentoStrategyFactory strategyFactory;
     private final EventManager eventManager;
     private final NotificacionesClient notificacionesClient;
+    private final PedidoSagaOrchestrator sagaOrchestrator;
 
     public LogisticaFacade(PedidoRepository pedidoRepository,
                            PedidoFactory pedidoFactory,
                            DescuentoStrategyFactory strategyFactory,
                            EventManager eventManager,
-                           NotificacionesClient notificacionesClient) {
+                           NotificacionesClient notificacionesClient,
+                           PedidoSagaOrchestrator sagaOrchestrator) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoFactory = pedidoFactory;
         this.strategyFactory = strategyFactory;
         this.eventManager = eventManager;
         this.notificacionesClient = notificacionesClient;
+        this.sagaOrchestrator = sagaOrchestrator;
     }
 
     public Pedido procesarPedido(PedidoRequest request, String tipoCliente) {
@@ -60,10 +64,13 @@ public class LogisticaFacade {
         System.out.println("[Facade] Paso 4: Disparando Observer PEDIDO_CREADO...");
         eventManager.notify("PEDIDO_CREADO", guardado.getId(), "CREADO");
 
-        System.out.println("[Facade] Paso 5: Notificando via Circuit Breaker...");
+        System.out.println("[Facade] Paso 5: Ejecutando SAGA...");
+        guardado = sagaOrchestrator.ejecutar(guardado, request);
+
+        System.out.println("[Facade] Paso 6: Notificando via Circuit Breaker...");
         notificacionesClient.notificarPedido(guardado.getId());
 
-        System.out.println("[Facade] Pedido #" + guardado.getId() + " procesado exitosamente.");
+        System.out.println("[Facade] Pedido #" + guardado.getId() + " procesado.");
         return guardado;
     }
 }
