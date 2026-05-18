@@ -9,3 +9,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 INSERT INTO usuarios (email, password, nombre, rol)
 VALUES ('admin@smartlogix.com', 'admin123', 'Administrador', 'ADMIN')
 ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO usuarios (email, password, nombre, rol)
+VALUES ('cliente@smartlogix.com', 'cliente123', 'Cliente Demo', 'CLIENTE')
+ON CONFLICT (email) DO NOTHING;
