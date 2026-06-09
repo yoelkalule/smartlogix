@@ -8,6 +8,8 @@ import com.smartlogix.msusuarios.service.UsuarioService;
 import com.smartlogix.msusuarios.singleton.SessionManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.smartlogix.msusuarios.dto.UsuarioRegistroRequest;
+import com.smartlogix.msusuarios.dto.UsuarioResponse;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -33,9 +35,9 @@ public class UsuarioController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<Usuario> registrar(@RequestBody Usuario usuario) {
-        return ResponseEntity.ok(usuarioService.registrar(usuario));
-    }
+public ResponseEntity<UsuarioResponse> registrar(@RequestBody UsuarioRegistroRequest request) {
+    return ResponseEntity.ok(usuarioService.registrar(request));
+}
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestParam String token) {

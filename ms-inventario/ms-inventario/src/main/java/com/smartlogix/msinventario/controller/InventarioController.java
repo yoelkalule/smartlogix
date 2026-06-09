@@ -1,7 +1,7 @@
 package com.smartlogix.msinventario.controller;
 
 import com.smartlogix.msinventario.dto.ProductoRequest;
-import com.smartlogix.msinventario.model.Producto;
+import com.smartlogix.msinventario.dto.ProductoResponse;
 import com.smartlogix.msinventario.service.InventarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,23 +24,23 @@ public class InventarioController {
     }
 
     @PostMapping("/productos")
-    public ResponseEntity<Producto> crear(@RequestBody ProductoRequest request) {
+    public ResponseEntity<ProductoResponse> crear(@RequestBody ProductoRequest request) {
         return ResponseEntity.ok(inventarioService.crearProducto(request));
     }
 
     @GetMapping("/productos")
-    public ResponseEntity<List<Producto>> listar() {
+    public ResponseEntity<List<ProductoResponse>> listar() {
         return ResponseEntity.ok(inventarioService.listarProductos());
     }
 
     @GetMapping("/productos/{id}")
-    public ResponseEntity<Producto> obtener(@PathVariable Long id) {
+    public ResponseEntity<ProductoResponse> obtener(@PathVariable Long id) {
         return ResponseEntity.ok(inventarioService.obtenerProducto(id));
     }
 
     @PutMapping("/productos/{id}/stock")
-    public ResponseEntity<Producto> actualizarStock(@PathVariable Long id,
-                                                     @RequestParam Integer cantidad) {
+    public ResponseEntity<ProductoResponse> actualizarStock(@PathVariable Long id,
+                                                             @RequestParam Integer cantidad) {
         return ResponseEntity.ok(inventarioService.actualizarStock(id, cantidad));
     }
 
@@ -51,8 +51,8 @@ public class InventarioController {
     }
 
     @PutMapping("/productos/{id}/stock/devolver")
-    public ResponseEntity<Producto> devolverStock(@PathVariable Long id,
-                                               @RequestParam Integer cantidad) {
-    return ResponseEntity.ok(inventarioService.devolverStock(id, cantidad));
-}
+    public ResponseEntity<ProductoResponse> devolverStock(@PathVariable Long id,
+                                                           @RequestParam Integer cantidad) {
+        return ResponseEntity.ok(inventarioService.devolverStock(id, cantidad));
+    }
 }

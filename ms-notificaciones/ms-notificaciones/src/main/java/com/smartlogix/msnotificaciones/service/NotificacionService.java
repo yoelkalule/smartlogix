@@ -1,5 +1,6 @@
 package com.smartlogix.msnotificaciones.service;
 
+import com.smartlogix.msnotificaciones.dto.NotificacionResponse;
 import com.smartlogix.msnotificaciones.factory.NotificacionFactory;
 import com.smartlogix.msnotificaciones.model.Notificacion;
 import com.smartlogix.msnotificaciones.model.NotificacionRegistro;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NotificacionService {
@@ -22,20 +24,28 @@ public class NotificacionService {
         this.notificacionRepository = notificacionRepository;
     }
 
-    public NotificacionRegistro procesarEvento(Long pedidoId) {
+    public NotificacionResponse procesarEvento(Long pedidoId) {
         String mensaje = "Se creo el pedido ID " + pedidoId;
 
         Notificacion notificacion = notificacionFactory.crear("EMAIL", pedidoId, mensaje);
         notificacion.enviar();
 
-        return guardarRegistro(pedidoId, TipoNotificacion.EMAIL, mensaje);
+        NotificacionRegistro registro = guardarRegistro(pedidoId, TipoNotificacion.EMAIL, mensaje);
+
+        return convertirAResponse(registro);
     }
 
-    public NotificacionRegistro enviarNotificacion(Long pedidoId, String tipo, String mensaje) {
+    public NotificacionResponse enviarNotificacion(Long pedidoId, String tipo, String mensaje) {
         Notificacion notificacion = notificacionFactory.crear(tipo, pedidoId, mensaje);
         notificacion.enviar();
 
-        return guardarRegistro(pedidoId, TipoNotificacion.valueOf(tipo.toUpperCase()), mensaje);
+        NotificacionRegistro registro = guardarRegistro(
+                pedidoId,
+                TipoNotificacion.valueOf(tipo.toUpperCase()),
+                mensaje
+        );
+
+        return convertirAResponse(registro);
     }
 
     private NotificacionRegistro guardarRegistro(Long pedidoId, TipoNotificacion tipo, String mensaje) {
@@ -45,14 +55,32 @@ public class NotificacionService {
         registro.setMensaje(mensaje);
         registro.setFechaEnvio(LocalDateTime.now());
         registro.setEnviado(true);
+
         return notificacionRepository.save(registro);
     }
 
-    public List<NotificacionRegistro> listarTodas() {
-        return notificacionRepository.findAll();
+    public List<NotificacionResponse> listarTodas() {
+        return notificacionRepository.findAll()
+                .stream()
+                .map(this::convertirAResponse)
+                .collect(Collectors.toList());
     }
 
-    public List<NotificacionRegistro> listarPorPedido(Long pedidoId) {
-        return notificacionRepository.findByPedidoId(pedidoId);
+    public List<NotificacionResponse> listarPorPedido(Long pedidoId) {
+        return notificacionRepository.findByPedidoId(pedidoId)
+                .stream()
+                .map(this::convertirAResponse)
+                .collect(Collectors.toList());
+    }
+
+    private NotificacionResponse convertirAResponse(NotificacionRegistro registro) {
+        return new NotificacionResponse(
+                registro.getId(),
+                registro.getPedidoId(),
+                registro.getTipo().name(),
+                registro.getMensaje(),
+                registro.getFechaEnvio(),
+                registro.getEnviado()
+        );
     }
 }

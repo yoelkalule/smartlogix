@@ -7,6 +7,8 @@ import com.smartlogix.msusuarios.model.Usuario;
 import com.smartlogix.msusuarios.repository.UsuarioRepository;
 import com.smartlogix.msusuarios.singleton.SessionManager;
 import org.springframework.stereotype.Service;
+import com.smartlogix.msusuarios.dto.UsuarioRegistroRequest;
+import com.smartlogix.msusuarios.dto.UsuarioResponse;
 
 @Service
 public class UsuarioService {
@@ -38,10 +40,24 @@ public class UsuarioService {
         );
     }
 
-    public Usuario registrar(Usuario usuario) {
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new RuntimeException("Email ya registrado");
-        }
-        return usuarioRepository.save(usuario);
+    public UsuarioResponse registrar(UsuarioRegistroRequest request) {
+    if (usuarioRepository.existsByEmail(request.getEmail())) {
+        throw new RuntimeException("Email ya registrado");
     }
+
+    Usuario usuario = new Usuario();
+    usuario.setEmail(request.getEmail());
+    usuario.setPassword(request.getPassword());
+    usuario.setNombre(request.getNombre());
+    usuario.setRol(request.getRol());
+
+    Usuario guardado = usuarioRepository.save(usuario);
+
+    return new UsuarioResponse(
+        guardado.getId(),
+        guardado.getEmail(),
+        guardado.getNombre(),
+        guardado.getRol().name()
+    );
+}
 }
