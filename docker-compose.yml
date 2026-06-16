@@ -48,9 +48,18 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/smartlogix
       SPRING_DATASOURCE_USERNAME: smartlogix
       SPRING_DATASOURCE_PASSWORD: smartlogix123
+      INVENTARIO_URL: http://ms-inventario:8081
+      ENVIOS_URL: http://ms-envios:8083
+      NOTIFICACIONES_URL: http://ms-notificaciones:8084
     depends_on:
       postgres:
         condition: service_healthy
+      ms-inventario:
+        condition: service_started
+      ms-envios:
+        condition: service_started
+      ms-notificaciones:
+        condition: service_started
 
   ms-envios:
     build: ./ms-envios/ms-envios
