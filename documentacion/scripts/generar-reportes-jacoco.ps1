@@ -12,16 +12,18 @@ $servicios = @(
 foreach ($servicio in $servicios) {
     Write-Host ""
     Write-Host "========================================"
-    Write-Host "Ejecutando pruebas en $servicio"
+    Write-Host "Ejecutando pruebas con Docker Java 21 en $servicio"
     Write-Host "========================================"
 
-    Push-Location $servicio
+    $ruta = Join-Path (Get-Location) $servicio
 
-    mvn clean test
-
-    Pop-Location
+    docker run --rm `
+        -v "${ruta}:/app" `
+        -w /app `
+        maven:3.9.9-eclipse-temurin-21 `
+        mvn clean test
 }
 
 Write-Host ""
-Write-Host "Reportes generados. Busca archivos en:"
+Write-Host "Reportes generados. Revisa:"
 Write-Host "target\site\jacoco\index.html"

@@ -45,6 +45,7 @@ class EnvioServiceTest {
         assertEquals(1L, resultado.getId());
         assertEquals(10L, resultado.getPedidoId());
         assertEquals("Santiago", resultado.getDestino());
+        assertEquals("ASIGNADO", resultado.getEstado());
 
         verify(envioRepository).findById(1L);
     }
@@ -60,10 +61,7 @@ class EnvioServiceTest {
                 () -> envioService.obtenerEnvio(99L)
         );
 
-        assertEquals(
-                "Envio no encontrado: 99",
-                exception.getMessage()
-        );
+        assertEquals("Envio no encontrado: 99", exception.getMessage());
 
         verify(envioRepository).findById(99L);
     }
@@ -82,9 +80,10 @@ class EnvioServiceTest {
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         EnvioResponse resultado =
-                envioService.actualizarEstado(1L, "EN_TRANSITO");
+                envioService.actualizarEstado(1L, "EN_RUTA");
 
-        assertEquals("EN_TRANSITO", resultado.getEstado());
+        assertNotNull(resultado);
+        assertEquals("EN_RUTA", resultado.getEstado());
 
         verify(envioRepository).findById(1L);
         verify(envioRepository).save(any(Envio.class));
