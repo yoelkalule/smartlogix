@@ -1,14 +1,13 @@
-package com.smartlogix.msusuarios;
+package com.smartlogix.msinventario;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-class MsUsuariosApplicationTest {
+class MsInventarioApplicationTest {
 
     @Test
     void contexto() {
-        assertDoesNotThrow(MsUsuariosApplication::new);
+        assertDoesNotThrow(MsInventarioApplication::new);
     }
-
 }

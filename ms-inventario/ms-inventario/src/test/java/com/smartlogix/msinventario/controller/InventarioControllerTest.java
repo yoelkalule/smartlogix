@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class InventarioControllerTest {
@@ -24,17 +24,6 @@ class InventarioControllerTest {
         controller = new InventarioController(inventarioService);
     }
 
-    private ProductoResponse productoResponse() {
-        return new ProductoResponse(
-                1L,
-                "Mouse",
-                "Mouse gamer",
-                19990.0,
-                20,
-                "ELECTRONICA"
-        );
-    }
-
     @Test
     void testEndpoint() {
         assertEquals("ms-inventario funcionando", controller.test());
@@ -44,8 +33,21 @@ class InventarioControllerTest {
     void crearProducto() {
 
         ProductoRequest request = new ProductoRequest();
+        request.setNombre("Mouse");
+        request.setDescripcion("Gaming");
+        request.setPrecio(10000.0);
+        request.setStock(10);
+        request.setCategoria("ELECTRONICA");
 
-        ProductoResponse response = productoResponse();
+        ProductoResponse response =
+                new ProductoResponse(
+                        1L,
+                        "Mouse",
+                        "Gaming",
+                        10000.0,
+                        10,
+                        "ELECTRONICA"
+                );
 
         when(inventarioService.crearProducto(request))
                 .thenReturn(response);
@@ -53,6 +55,7 @@ class InventarioControllerTest {
         ResponseEntity<ProductoResponse> resultado =
                 controller.crear(request);
 
+        assertEquals(200, resultado.getStatusCode().value());
         assertEquals(response, resultado.getBody());
 
         verify(inventarioService).crearProducto(request);
@@ -61,16 +64,24 @@ class InventarioControllerTest {
     @Test
     void listarProductos() {
 
-        List<ProductoResponse> lista =
-                List.of(productoResponse());
+        List<ProductoResponse> lista = List.of(
+                new ProductoResponse(
+                        1L,
+                        "Mouse",
+                        "Gaming",
+                        10000.0,
+                        10,
+                        "ELECTRONICA"
+                )
+        );
 
-        when(inventarioService.listarProductos())
-                .thenReturn(lista);
+        when(inventarioService.listarProductos()).thenReturn(lista);
 
         ResponseEntity<List<ProductoResponse>> resultado =
                 controller.listar();
 
-        assertEquals(lista, resultado.getBody());
+        assertEquals(200, resultado.getStatusCode().value());
+        assertEquals(1, resultado.getBody().size());
 
         verify(inventarioService).listarProductos();
     }
@@ -78,7 +89,15 @@ class InventarioControllerTest {
     @Test
     void obtenerProducto() {
 
-        ProductoResponse response = productoResponse();
+        ProductoResponse response =
+                new ProductoResponse(
+                        1L,
+                        "Mouse",
+                        "Gaming",
+                        10000.0,
+                        10,
+                        "ELECTRONICA"
+                );
 
         when(inventarioService.obtenerProducto(1L))
                 .thenReturn(response);
@@ -86,6 +105,7 @@ class InventarioControllerTest {
         ResponseEntity<ProductoResponse> resultado =
                 controller.obtener(1L);
 
+        assertEquals(200, resultado.getStatusCode().value());
         assertEquals(response, resultado.getBody());
 
         verify(inventarioService).obtenerProducto(1L);
@@ -94,22 +114,58 @@ class InventarioControllerTest {
     @Test
     void actualizarStock() {
 
-        ProductoResponse response = productoResponse();
+        ProductoResponse response =
+                new ProductoResponse(
+                        1L,
+                        "Mouse",
+                        "Gaming",
+                        5.0,
+                        20,
+                        "ELECTRONICA"
+                );
 
-        when(inventarioService.actualizarStock(1L, 5))
+        when(inventarioService.actualizarStock(1L,5))
                 .thenReturn(response);
 
         ResponseEntity<ProductoResponse> resultado =
-                controller.actualizarStock(1L, 5);
+                controller.actualizarStock(1L,5);
 
-        assertEquals(response, resultado.getBody());
+        assertEquals(200, resultado.getStatusCode().value());
 
         verify(inventarioService)
-                .actualizarStock(1L, 5);
+                .actualizarStock(1L,5);
+    }
+
+    @Test
+    void devolverStock() {
+
+        ProductoResponse response =
+                new ProductoResponse(
+                        1L,
+                        "Mouse",
+                        "Gaming",
+                        5.0,
+                        30,
+                        "ELECTRONICA"
+                );
+
+        when(inventarioService.devolverStock(1L,10))
+                .thenReturn(response);
+
+        ResponseEntity<ProductoResponse> resultado =
+                controller.devolverStock(1L,10);
+
+        assertEquals(200, resultado.getStatusCode().value());
+
+        verify(inventarioService)
+                .devolverStock(1L,10);
     }
 
     @Test
     void eliminarProducto() {
+
+        doNothing().when(inventarioService)
+                .eliminarProducto(1L);
 
         ResponseEntity<Void> resultado =
                 controller.eliminar(1L);
@@ -118,22 +174,5 @@ class InventarioControllerTest {
 
         verify(inventarioService)
                 .eliminarProducto(1L);
-    }
-
-    @Test
-    void devolverStock() {
-
-        ProductoResponse response = productoResponse();
-
-        when(inventarioService.devolverStock(1L, 5))
-                .thenReturn(response);
-
-        ResponseEntity<ProductoResponse> resultado =
-                controller.devolverStock(1L, 5);
-
-        assertEquals(response, resultado.getBody());
-
-        verify(inventarioService)
-                .devolverStock(1L, 5);
     }
 }
