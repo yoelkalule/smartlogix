@@ -1,7 +1,15 @@
 package com.smartlogix.msusuarios.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginRequest {
+
+    @Email(message = "El email debe tener formato valido")
+    @NotBlank(message = "El email es obligatorio")
     private String email;
+
+    @NotBlank(message = "La password es obligatoria")
     private String password;
 
     public String getEmail() { return email; }

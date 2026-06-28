@@ -3,6 +3,9 @@ package com.smartlogix.msinventario.controller;
 import com.smartlogix.msinventario.dto.ProductoRequest;
 import com.smartlogix.msinventario.dto.ProductoResponse;
 import com.smartlogix.msinventario.service.InventarioService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +27,7 @@ public class InventarioController {
     }
 
     @PostMapping("/productos")
-    public ResponseEntity<ProductoResponse> crear(@RequestBody ProductoRequest request) {
+    public ResponseEntity<?> crear(@Valid @RequestBody ProductoRequest request){
         return ResponseEntity.ok(inventarioService.crearProducto(request));
     }
 

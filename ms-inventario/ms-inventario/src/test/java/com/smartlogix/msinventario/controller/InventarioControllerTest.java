@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -52,7 +53,7 @@ class InventarioControllerTest {
         when(inventarioService.crearProducto(request))
                 .thenReturn(response);
 
-        ResponseEntity<ProductoResponse> resultado =
+        ResponseEntity<?> resultado =
                 controller.crear(request);
 
         assertEquals(200, resultado.getStatusCode().value());

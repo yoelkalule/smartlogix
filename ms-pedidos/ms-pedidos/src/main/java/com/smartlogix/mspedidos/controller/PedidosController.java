@@ -5,6 +5,9 @@ import com.smartlogix.mspedidos.dto.PedidoResponse;
 import com.smartlogix.mspedidos.service.PedidoService;
 import com.smartlogix.mspedidos.strategy.DescuentoStrategy;
 import com.smartlogix.mspedidos.strategy.DescuentoStrategyFactory;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +32,7 @@ public class PedidosController {
     }
 
     @PostMapping
-    public ResponseEntity<PedidoResponse> crear(@RequestBody PedidoRequest request,
+    public ResponseEntity<?> crear(@Valid @RequestBody PedidoRequest request,
                                                  @RequestParam(defaultValue = "NORMAL") String tipoCliente) {
         return ResponseEntity.ok(pedidoService.crearPedido(request, tipoCliente));
     }

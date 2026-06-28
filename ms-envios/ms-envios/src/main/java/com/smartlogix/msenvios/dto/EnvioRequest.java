@@ -1,8 +1,17 @@
 package com.smartlogix.msenvios.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class EnvioRequest {
+
+    @NotNull(message = "El pedidoId es obligatorio")
     private Long pedidoId;
+
+    @NotBlank(message = "El destino es obligatorio")
     private String destino;
+
+    @NotBlank(message = "El transportista es obligatorio")
     private String transportista;
 
     public Long getPedidoId() { return pedidoId; }

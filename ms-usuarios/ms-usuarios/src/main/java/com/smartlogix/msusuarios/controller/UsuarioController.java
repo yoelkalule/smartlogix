@@ -6,6 +6,9 @@ import com.smartlogix.msusuarios.model.Rol;
 import com.smartlogix.msusuarios.model.Usuario;
 import com.smartlogix.msusuarios.service.UsuarioService;
 import com.smartlogix.msusuarios.singleton.SessionManager;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.smartlogix.msusuarios.dto.UsuarioRegistroRequest;
@@ -30,12 +33,12 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(usuarioService.login(request));
     }
 
     @PostMapping("/registrar")
-public ResponseEntity<UsuarioResponse> registrar(@RequestBody UsuarioRegistroRequest request) {
+public ResponseEntity<?> registrar(@Valid @RequestBody UsuarioRegistroRequest request) {
     return ResponseEntity.ok(usuarioService.registrar(request));
 }
 

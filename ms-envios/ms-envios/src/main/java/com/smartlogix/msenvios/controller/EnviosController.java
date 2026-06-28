@@ -3,8 +3,12 @@ package com.smartlogix.msenvios.controller;
 import com.smartlogix.msenvios.dto.EnvioRequest;
 import com.smartlogix.msenvios.dto.EnvioResponse;
 import com.smartlogix.msenvios.service.EnvioService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -24,7 +28,7 @@ public class EnviosController {
     }
 
     @PostMapping
-    public ResponseEntity<EnvioResponse> crear(@RequestBody EnvioRequest request) {
+    public ResponseEntity<?> crear(@Valid @RequestBody EnvioRequest request){
         return ResponseEntity.ok(envioService.crearEnvio(request));
     }
 
