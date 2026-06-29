@@ -19,6 +19,16 @@ export default function App() {
     setUsuario(null)
   }
 
+  const handleLogin = (data) => {
+  localStorage.setItem('usuario', JSON.stringify(data))
+  setUsuario(data)
+}
+
+const handleLogout = () => {
+  localStorage.removeItem('usuario')
+  setUsuario(null)
+}
+
   if (!usuario) {
     return <Login onLogin={handleLogin} />
   }

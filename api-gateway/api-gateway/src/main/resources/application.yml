@@ -2,30 +2,61 @@ server:
   port: 9000
 
 spring:
+  application:
+    name: api-gateway
+  data:
+    redis:
+      host: redis
+      port: 6379
   cloud:
     gateway:
+      default-filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 10
+            redis-rate-limiter.burstCapacity: 20
+            key-resolver: "#{@ipKeyResolver}"
       routes:
+        - id: ms-usuarios-login
+          uri: http://ms-usuarios:8080
+          predicates:
+            - Path=/api/usuarios/login, /api/usuarios/registrar
         - id: ms-usuarios
           uri: http://ms-usuarios:8080
           predicates:
             - Path=/api/usuarios/**
-
+          filters:
+            - name: JwtAuthFilter
         - id: ms-inventario
           uri: http://ms-inventario:8081
           predicates:
             - Path=/api/inventario/**
-
+          filters:
+            - name: JwtAuthFilter
         - id: ms-pedidos
           uri: http://ms-pedidos:8082
           predicates:
             - Path=/api/pedidos/**
-
+          filters:
+            - name: JwtAuthFilter
         - id: ms-envios
           uri: http://ms-envios:8083
           predicates:
             - Path=/api/envios/**
-
+          filters:
+            - name: JwtAuthFilter
         - id: ms-notificaciones
           uri: http://ms-notificaciones:8084
           predicates:
             - Path=/api/notificaciones/**
+          filters:
+            - name: JwtAuthFilter
+
+jwt:
+  secret: smartlogix-secret-key-2024-muy-segura-larga
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

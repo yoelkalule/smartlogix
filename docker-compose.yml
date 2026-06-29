@@ -16,6 +16,11 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
   ms-usuarios:
     build: ./ms-usuarios/ms-usuarios
     ports:
@@ -95,6 +100,8 @@ services:
       - ms-pedidos
       - ms-envios
       - ms-notificaciones
+      - redis
 
 volumes:
   postgres_data:
+  redis_data:
